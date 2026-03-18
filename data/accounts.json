@@ -1,0 +1,13 @@
+{
+  "users": [],
+  "admins": [
+    {
+      "id": "basadmin-001",
+      "username": "BasAdmin",
+      "type": "bas_admin",
+      "productKey": "GMPLT-XKQZ7-M9R4N-BW2VP-L8TJH",
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    }
+  ],
+  "subAdmins": []
+}

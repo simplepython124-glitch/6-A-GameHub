@@ -1,0 +1,18 @@
+{
+  "name": "6a-gamehub",
+  "version": "1.0.0",
+  "description": "6A GameHub - Sosyal Oyun Platformu",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "nodemon server/index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "bcryptjs": "^2.4.3",
+    "uuid": "^9.0.0",
+    "cors": "^2.8.5",
+    "body-parser": "^1.20.2"
+  }
+}

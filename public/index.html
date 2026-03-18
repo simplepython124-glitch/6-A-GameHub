@@ -1,0 +1,2133 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6A GameHub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #060610;
+  --surface: #0d0d1f;
+  --surface2: #141428;
+  --border: #1e1e3a;
+  --accent: #6c63ff;
+  --accent2: #ff6584;
+  --accent3: #43e97b;
+  --text: #e8e8ff;
+  --text2: #8888aa;
+  --gold: #ffd700;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Exo 2', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ===== CONNECTIVITY POPUP ===== */
+#connectivity-popup {
+  display: none;
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-family: 'Exo 2', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  backdrop-filter: blur(20px);
+  border: 1px solid;
+  animation: slideDown 0.3s ease;
+  white-space: nowrap;
+}
+#connectivity-popup.no-internet {
+  background: rgba(255, 50, 50, 0.15);
+  border-color: rgba(255, 50, 50, 0.4);
+  color: #ff6b6b;
+  box-shadow: 0 4px 30px rgba(255, 50, 50, 0.2);
+}
+#connectivity-popup.no-server {
+  background: rgba(255, 165, 0, 0.15);
+  border-color: rgba(255, 165, 0, 0.4);
+  color: #ffa500;
+  box-shadow: 0 4px 30px rgba(255, 165, 0, 0.2);
+}
+@keyframes slideDown { from { opacity:0; top:0 } to { opacity:1; top:20px } }
+
+/* ===== STARS BG ===== */
+.stars {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.star {
+  position: absolute;
+  border-radius: 50%;
+  background: white;
+  animation: twinkle linear infinite;
+}
+@keyframes twinkle {
+  0%,100% { opacity:0.1; transform:scale(1); }
+  50% { opacity:0.8; transform:scale(1.3); }
+}
+
+/* ===== PAGES ===== */
+.page { display:none; min-height:100vh; position:relative; z-index:1; }
+.page.active { display:flex; }
+
+/* ===== LOGIN PAGE ===== */
+#login-page {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.login-logo {
+  text-align: center;
+  margin-bottom: 40px;
+}
+.login-logo h1 {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
+  letter-spacing: 4px;
+}
+.login-logo p {
+  color: var(--text2);
+  font-size: 14px;
+  margin-top: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.login-tabs {
+  display: flex;
+  gap: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 30px;
+}
+.login-tab {
+  padding: 10px 30px;
+  border-radius: 9px;
+  border: none;
+  background: transparent;
+  color: var(--text2);
+  font-family: 'Exo 2', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+.login-tab.active {
+  background: linear-gradient(135deg, var(--accent), #8b83ff);
+  color: white;
+  box-shadow: 0 4px 15px rgba(108, 99, 255, 0.4);
+}
+
+.auth-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 40px;
+  width: 100%;
+  max-width: 420px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+
+.auth-card h2 {
+  font-family: 'Orbitron', monospace;
+  font-size: 18px;
+  margin-bottom: 30px;
+  color: var(--accent);
+  letter-spacing: 2px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+.form-group label {
+  display: block;
+  font-size: 12px;
+  color: var(--text2);
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.form-group input {
+  width: 100%;
+  padding: 14px 18px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-family: 'Exo 2', sans-serif;
+  font-size: 15px;
+  transition: all 0.3s;
+  outline: none;
+  -webkit-text-security: none;
+}
+.form-group input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(108,99,255,0.15);
+}
+.form-group input.product-key {
+  font-family: 'Orbitron', monospace;
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.btn {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Exo 2', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s;
+  letter-spacing: 1px;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent), #8b83ff);
+  color: white;
+  box-shadow: 0 4px 20px rgba(108,99,255,0.3);
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(108,99,255,0.5);
+}
+.btn-danger {
+  background: linear-gradient(135deg, #ff4444, #ff6b6b);
+  color: white;
+}
+.btn-success {
+  background: linear-gradient(135deg, var(--accent3), #38d68a);
+  color: #060610;
+}
+.btn-sm {
+  width: auto;
+  padding: 8px 16px;
+  font-size: 12px;
+}
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text2);
+}
+.btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+.auth-link {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 13px;
+  color: var(--text2);
+}
+.auth-link span {
+  color: var(--accent);
+  cursor: pointer;
+  font-weight: 600;
+}
+.auth-link span:hover { text-decoration: underline; }
+
+.error-msg {
+  color: var(--accent2);
+  font-size: 13px;
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* ===== MAIN APP ===== */
+#app-page {
+  flex-direction: column;
+}
+
+/* ===== TOPBAR ===== */
+.topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 60px;
+  background: rgba(13, 13, 31, 0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 100;
+}
+
+.topbar-logo {
+  font-family: 'Orbitron', monospace;
+  font-size: 16px;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 2px;
+}
+
+.topbar-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.token-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,215,0,0.1);
+  border: 1px solid rgba(255,215,0,0.2);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 13px;
+  color: var(--gold);
+  font-weight: 700;
+}
+.user-code {
+  font-family: 'Orbitron', monospace;
+  font-size: 11px;
+  color: var(--text2);
+  background: var(--surface2);
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+}
+
+/* ===== TABS ===== */
+.app-tabs {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 70px;
+  background: rgba(13, 13, 31, 0.97);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  z-index: 100;
+}
+
+.tab-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 16px;
+  border: none;
+  background: transparent;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.3s;
+  border-radius: 12px;
+  font-family: 'Exo 2', sans-serif;
+}
+.tab-btn .tab-icon { font-size: 22px; transition: all 0.3s; }
+.tab-btn .tab-label { font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+.tab-btn.active { color: var(--accent); }
+.tab-btn.active .tab-icon { transform: scale(1.2); filter: drop-shadow(0 0 8px var(--accent)); }
+
+/* ===== CONTENT AREA ===== */
+.app-content {
+  margin-top: 60px;
+  margin-bottom: 70px;
+  padding: 20px;
+  min-height: calc(100vh - 130px);
+}
+
+.section { display: none; }
+.section.active { display: block; }
+
+.section-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 20px;
+  color: var(--accent);
+  margin-bottom: 20px;
+  letter-spacing: 2px;
+}
+
+/* ===== CARDS ===== */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+  transition: all 0.3s;
+}
+.card:hover { border-color: rgba(108,99,255,0.3); }
+
+/* ===== FRIENDS ===== */
+.friend-add-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.friend-add-bar input {
+  flex: 1;
+  padding: 12px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-family: 'Orbitron', monospace;
+  font-size: 14px;
+  outline: none;
+  text-transform: uppercase;
+}
+.friend-add-bar input:focus { border-color: var(--accent); }
+
+.friend-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 10px;
+}
+.friend-avatar {
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+  font-family: 'Orbitron', monospace;
+  flex-shrink: 0;
+}
+.friend-info { flex: 1; }
+.friend-name { font-weight: 700; font-size: 15px; }
+.friend-code { font-family: 'Orbitron', monospace; font-size: 11px; color: var(--text2); }
+
+/* ===== GAMES ===== */
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 14px;
+}
+
+.game-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.game-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent, rgba(108,99,255,0.05));
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.game-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(108,99,255,0.2);
+}
+.game-card:hover::before { opacity: 1; }
+.game-icon { font-size: 40px; margin-bottom: 10px; display: block; }
+.game-name { font-weight: 700; font-size: 13px; color: var(--text); margin-bottom: 4px; }
+.game-reward { font-size: 11px; color: var(--gold); font-weight: 600; }
+
+/* ===== GAME MODAL ===== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(8px);
+  z-index: 200;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-overlay.open { display: flex; }
+
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 30px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+.modal h3 {
+  font-family: 'Orbitron', monospace;
+  font-size: 18px;
+  color: var(--accent);
+  margin-bottom: 20px;
+  letter-spacing: 2px;
+}
+.modal-close {
+  position: absolute;
+  top: 16px; right: 16px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text2);
+  width: 32px; height: 32px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.modal-close:hover { color: var(--accent2); border-color: var(--accent2); }
+
+/* ===== GAME CANVAS AREA ===== */
+.game-area {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 15px;
+}
+.game-area canvas, .game-area .game-inner {
+  width: 100%;
+  display: block;
+  touch-action: none;
+}
+.game-inner {
+  padding: 20px;
+  min-height: 200px;
+}
+
+.game-controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ===== MARKET ===== */
+.market-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
+}
+.market-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  transition: all 0.3s;
+}
+.market-item:hover { border-color: var(--accent); transform: translateY(-2px); }
+.market-item-icon { font-size: 36px; margin-bottom: 10px; }
+.market-item-name { font-weight: 700; font-size: 14px; margin-bottom: 6px; }
+.market-item-type { font-size: 11px; color: var(--text2); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
+.market-item-price { color: var(--gold); font-weight: 700; font-size: 16px; margin-bottom: 14px; }
+.owned-badge { display: inline-block; background: rgba(67,233,123,0.1); color: var(--accent3); border: 1px solid rgba(67,233,123,0.3); border-radius: 6px; padding: 3px 10px; font-size: 11px; font-weight: 600; }
+
+/* ===== PROFILE ===== */
+.profile-header {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 30px;
+  text-align: center;
+  margin-bottom: 20px;
+  position: relative;
+}
+.profile-avatar {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px; font-weight: 900;
+  font-family: 'Orbitron', monospace;
+  margin: 0 auto 16px;
+  border: 3px solid var(--accent);
+  box-shadow: 0 0 20px rgba(108,99,255,0.4);
+}
+.profile-username { font-family: 'Orbitron', monospace; font-size: 22px; font-weight: 700; }
+.profile-code { font-family: 'Orbitron', monospace; font-size: 13px; color: var(--text2); margin-top: 4px; }
+.profile-stats { display: flex; gap: 20px; justify-content: center; margin-top: 20px; }
+.stat-item { text-align: center; }
+.stat-value { font-size: 22px; font-weight: 700; color: var(--accent); }
+.stat-label { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; }
+
+.password-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 16px;
+}
+.password-dots { flex: 1; letter-spacing: 4px; font-size: 20px; color: var(--text2); }
+.password-reveal { background: none; border: none; cursor: pointer; color: var(--text2); font-size: 18px; padding: 0; }
+
+.badges-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 16px 0;
+}
+.badge-item {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+.badge-item:hover { border-color: var(--gold); box-shadow: 0 0 10px rgba(255,215,0,0.2); }
+.badge-item .badge-icon { font-size: 20px; }
+.badge-count { background: var(--accent); color: white; border-radius: 10px; padding: 1px 7px; font-size: 11px; font-weight: 700; }
+
+/* ===== TRADE ===== */
+.trade-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px;
+  margin-bottom: 12px;
+}
+.trade-status { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+.trade-status.pending { color: #ffa500; }
+.trade-status.accepted { color: var(--accent3); }
+.trade-status.rejected { color: var(--accent2); }
+
+/* ===== GIFT ===== */
+.gift-form { max-width: 400px; }
+
+/* ===== ADMIN PANEL ===== */
+#admin-page {
+  flex-direction: column;
+}
+
+.admin-topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 60px;
+  background: rgba(20, 0, 0, 0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255,50,50,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 100;
+}
+
+.admin-logo {
+  font-family: 'Orbitron', monospace;
+  font-size: 14px;
+  font-weight: 900;
+  color: #ff4444;
+  letter-spacing: 2px;
+}
+
+.admin-content { margin-top: 60px; padding: 20px; }
+
+.admin-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.admin-tab {
+  padding: 8px 18px;
+  border: 1px solid rgba(255,50,50,0.2);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text2);
+  font-family: 'Exo 2', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.3s;
+  letter-spacing: 1px;
+}
+.admin-tab.active, .admin-tab:hover { background: rgba(255,50,50,0.1); border-color: #ff4444; color: #ff4444; }
+
+.admin-section { display: none; }
+.admin-section.active { display: block; }
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.admin-table th {
+  background: var(--surface2);
+  padding: 10px 14px;
+  text-align: left;
+  color: var(--text2);
+  font-weight: 600;
+  letter-spacing: 1px;
+  font-size: 11px;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+}
+.admin-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  vertical-align: middle;
+}
+.admin-table tr:hover td { background: rgba(255,50,50,0.03); }
+
+.badge-def-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.badge-def-item {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 13px;
+}
+.badge-def-item:hover, .badge-def-item.selected { border-color: #ff4444; background: rgba(255,50,50,0.05); }
+
+/* ===== EFFECTS ===== */
+.fire-text { background: linear-gradient(to right, #ff4444, #ff8800, #ffff00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.ice-text { background: linear-gradient(to right, #74ebd5, #acb6e5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.gold-text { background: linear-gradient(to right, #f6d365, #fda085); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.rainbow-text { background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: rainbow 3s linear infinite; background-size: 200%; }
+.neon-text { color: #00ffff; text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 40px #00ffff; -webkit-text-fill-color: #00ffff; }
+@keyframes rainbow { 0%{background-position:0%} 100%{background-position:200%} }
+
+.galaxy-profile { background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460, #533483); }
+.aurora-profile { background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); }
+.flame-profile { background: linear-gradient(135deg, #200122, #6f0000); }
+
+/* ===== TOAST ===== */
+#toast {
+  position: fixed;
+  bottom: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  z-index: 500;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  white-space: nowrap;
+}
+#toast.show { opacity: 1; }
+#toast.success { border-color: var(--accent3); color: var(--accent3); }
+#toast.error { border-color: var(--accent2); color: var(--accent2); }
+
+/* ===== USERNAME RULES ===== */
+.rule-item {
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--text2);
+  transition: all 0.25s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.rule-item.ok {
+  color: var(--accent3);
+  border-color: rgba(67,233,123,0.3);
+  background: rgba(67,233,123,0.06);
+}
+.rule-item.fail {
+  color: var(--accent2);
+  border-color: rgba(255,101,132,0.3);
+  background: rgba(255,101,132,0.06);
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<!-- Stars background -->
+<div class="stars" id="stars"></div>
+
+<!-- Connectivity Popup -->
+<div id="connectivity-popup"></div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- ===== LOGIN PAGE ===== -->
+<div class="page active" id="login-page">
+  <div class="login-logo">
+    <h1>6A GAMEHUB</h1>
+    <p>Oyna • Kazan • Paylaş</p>
+  </div>
+  <div class="login-tabs">
+    <button class="login-tab active" onclick="switchLoginMode('user')">Kullanıcı</button>
+    <button class="login-tab" onclick="switchLoginMode('admin')">Admin</button>
+  </div>
+
+  <!-- User Auth -->
+  <div id="user-auth-section" class="auth-card">
+    <div id="user-login-form">
+      <h2>GİRİŞ YAP</h2>
+      <div class="form-group">
+        <label>İsim</label>
+        <input type="text" id="login-username" placeholder="Kullanıcı adınız" autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label>Şifre</label>
+        <input type="password" id="login-password" placeholder="••••••••">
+      </div>
+      <div class="error-msg" id="login-error"></div>
+      <button class="btn btn-primary" style="margin-top:10px" onclick="doLogin()">Giriş Yap</button>
+      <div class="auth-link">Hesabın yok mu? <span onclick="showRegister()">Olsun o zaman.</span></div>
+    </div>
+
+    <div id="user-register-form" style="display:none">
+      <h2>KAYIT OL</h2>
+      <div class="form-group">
+        <label>Kullanıcı Adı</label>
+        <input type="text" id="reg-username" placeholder="ornekkullanici_123" autocomplete="off" maxlength="30" oninput="liveValidateUsername(this.value)">
+        <div id="username-rules" style="margin-top:10px;display:flex;flex-direction:column;gap:5px">
+          <div class="rule-item" id="rule-len">⬜ En az 9 karakter</div>
+          <div class="rule-item" id="rule-maxlen">⬜ En fazla 30 karakter</div>
+          <div class="rule-item" id="rule-letters">⬜ En az 5 harf (a-z / A-Z)</div>
+          <div class="rule-item" id="rule-punct">⬜ En az 1 alt çizgi ( _ )</div>
+          <div class="rule-item" id="rule-digits">⬜ En az 3 rakam (0-9)</div>
+          <div class="rule-item" id="rule-chars">⬜ Sadece harf, rakam ve _ karakteri</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Şifre</label>
+        <input type="password" id="reg-password" placeholder="••••••••">
+      </div>
+      <div class="error-msg" id="reg-error"></div>
+      <button class="btn btn-primary" id="reg-btn" style="margin-top:10px;opacity:0.5;cursor:not-allowed" onclick="doRegister()">Kayıt Ol</button>
+      <div class="auth-link"><span onclick="showLogin()">← Giriş yap</span></div>
+    </div>
+  </div>
+
+  <!-- Admin Auth -->
+  <div id="admin-auth-section" class="auth-card" style="display:none">
+    <h2>ADMİN GİRİŞİ</h2>
+    <div class="form-group">
+      <label>25 Haneli Ürün Anahtarı</label>
+      <input type="text" id="admin-key-input" class="product-key" placeholder="XXXXX-XXXXX-XXXXX-XXXXX-XXXXX" maxlength="29" autocomplete="off">
+    </div>
+    <div class="error-msg" id="admin-error"></div>
+    <button class="btn btn-primary" style="margin-top:10px" onclick="doAdminLogin()">Admin Girişi</button>
+  </div>
+</div>
+
+<!-- ===== APP PAGE ===== -->
+<div class="page" id="app-page">
+  <div class="topbar">
+    <div class="topbar-logo">6A</div>
+    <div class="topbar-user">
+      <div class="token-badge">🪙 <span id="topbar-tokens">0</span></div>
+      <div class="user-code" id="topbar-code">@0000</div>
+      <button class="btn btn-sm btn-outline" onclick="doLogout()">Çıkış</button>
+    </div>
+  </div>
+
+  <div class="app-content">
+    <!-- FRIENDS -->
+    <div class="section active" id="section-friends">
+      <div class="section-title">👥 Arkadaşlarım</div>
+      <div class="friend-add-bar">
+        <input type="text" id="friend-code-input" placeholder="@0000" maxlength="5">
+        <button class="btn btn-primary btn-sm" onclick="addFriend()">Ekle</button>
+      </div>
+      <div id="friends-list"></div>
+    </div>
+
+    <!-- GAMES -->
+    <div class="section" id="section-games">
+      <div class="section-title">🎮 Oyunlar</div>
+      <p style="color:var(--text2);font-size:13px;margin-bottom:16px">Her kazanma = <span style="color:var(--gold)">5 🪙 token</span></p>
+      <div class="games-grid" id="games-grid"></div>
+    </div>
+
+    <!-- TRADE -->
+    <div class="section" id="section-trade">
+      <div class="section-title">🤝 Takas</div>
+      <div class="card">
+        <h3 style="font-size:15px;margin-bottom:16px;color:var(--accent)">Yeni Takas Teklifi</h3>
+        <div class="form-group">
+          <label>Arkadaş</label>
+          <select id="trade-friend" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Exo 2',sans-serif;outline:none"></select>
+        </div>
+        <div class="form-group">
+          <label>Teklif Ettiğin Rozet</label>
+          <select id="trade-offered" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Exo 2',sans-serif;outline:none"></select>
+        </div>
+        <div class="form-group">
+          <label>İstediğin Rozet ID (karşı taraftan)</label>
+          <input type="text" id="trade-wanted" placeholder="badge_10" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Exo 2',sans-serif;outline:none">
+        </div>
+        <button class="btn btn-primary" onclick="createTrade()">Teklif Gönder</button>
+      </div>
+      <div class="section-title" style="font-size:15px;margin-top:20px">Gelen Teklifler</div>
+      <div id="trades-list"></div>
+    </div>
+
+    <!-- MARKET -->
+    <div class="section" id="section-market">
+      <div class="section-title">🛍️ Market</div>
+      <div class="market-grid" id="market-grid"></div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="section" id="section-profile">
+      <div class="section-title">👤 Profil</div>
+      <div class="profile-header" id="profile-header-card">
+        <div class="profile-avatar" id="profile-avatar">?</div>
+        <div class="profile-username" id="profile-username">-</div>
+        <div class="profile-code" id="profile-code">@0000</div>
+        <div class="profile-stats">
+          <div class="stat-item"><div class="stat-value" id="profile-wins">0</div><div class="stat-label">Kazanma</div></div>
+          <div class="stat-item"><div class="stat-value" id="profile-tokens">0</div><div class="stat-label">Token</div></div>
+          <div class="stat-item"><div class="stat-value" id="profile-badge-count">0</div><div class="stat-label">Rozet</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div style="font-size:13px;color:var(--text2);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Şifre</div>
+        <div class="password-field">
+          <div class="password-dots" id="password-display">••••••••</div>
+          <button class="password-reveal" onmousedown="revealPassword()" onmouseup="hidePassword()" ontouchstart="revealPassword()" ontouchend="hidePassword()">👁️</button>
+        </div>
+      </div>
+      <div class="card">
+        <div style="font-size:13px;color:var(--text2);margin-bottom:12px;text-transform:uppercase;letter-spacing:1px">Rozetlerim</div>
+        <div class="badges-grid" id="profile-badges"></div>
+      </div>
+    </div>
+
+    <!-- GIFT -->
+    <div class="section" id="section-gift">
+      <div class="section-title">🎁 Hediye</div>
+      <div class="card gift-form">
+        <div class="form-group">
+          <label>Arkadaş</label>
+          <select id="gift-friend" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Exo 2',sans-serif;outline:none"></select>
+        </div>
+        <div class="form-group">
+          <label>Token Miktarı</label>
+          <input type="number" id="gift-amount" min="1" placeholder="100" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Exo 2',sans-serif;outline:none">
+        </div>
+        <button class="btn btn-success" onclick="sendGift()">🎁 Gönder</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-tabs">
+    <button class="tab-btn active" onclick="switchTab('friends')"><span class="tab-icon">👥</span><span class="tab-label">Arkadaş</span></button>
+    <button class="tab-btn" onclick="switchTab('games')"><span class="tab-icon">🎮</span><span class="tab-label">Oyunlar</span></button>
+    <button class="tab-btn" onclick="switchTab('trade')"><span class="tab-icon">🤝</span><span class="tab-label">Takas</span></button>
+    <button class="tab-btn" onclick="switchTab('market')"><span class="tab-icon">🛍️</span><span class="tab-label">Market</span></button>
+    <button class="tab-btn" onclick="switchTab('profile')"><span class="tab-icon">👤</span><span class="tab-label">Profil</span></button>
+    <button class="tab-btn" onclick="switchTab('gift')"><span class="tab-icon">🎁</span><span class="tab-label">Hediye</span></button>
+  </div>
+</div>
+
+<!-- ===== ADMIN PAGE ===== -->
+<div class="page" id="admin-page">
+  <div class="admin-topbar">
+    <div class="admin-logo">⚔️ ADMİN PANELİ</div>
+    <div style="display:flex;gap:10px;align-items:center">
+      <span id="admin-type-label" style="font-size:12px;color:#ff4444;font-weight:600"></span>
+      <button class="btn btn-sm btn-outline" onclick="doLogout()">Çıkış</button>
+    </div>
+  </div>
+  <div class="admin-content">
+    <div class="admin-tabs" id="admin-tabs"></div>
+
+    <!-- Users section -->
+    <div class="admin-section active" id="admin-section-users">
+      <div style="margin-bottom:16px;display:flex;gap:10px">
+        <input type="text" id="admin-search" placeholder="Kullanıcı ara..." oninput="filterAdminUsers()" style="padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Exo 2',sans-serif;width:250px;outline:none">
+      </div>
+      <div style="overflow-x:auto">
+        <table class="admin-table">
+          <thead><tr>
+            <th>Kullanıcı</th><th>Kod</th><th>Kazanma</th><th>Token</th><th>Rozet</th><th>Durum</th><th>İşlemler</th>
+          </tr></thead>
+          <tbody id="admin-users-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Sub admins section (bas admin only) -->
+    <div class="admin-section" id="admin-section-subadmins">
+      <div class="card" style="max-width:400px;margin-bottom:20px">
+        <h3 style="font-size:15px;color:#ff4444;margin-bottom:16px">Alt Admin Oluştur</h3>
+        <div class="form-group">
+          <label>Kullanıcı ID</label>
+          <input type="text" id="subadmin-userid" placeholder="Kullanıcı ID'si" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Exo 2',sans-serif;outline:none">
+        </div>
+        <button class="btn btn-danger" onclick="createSubAdmin()">Alt Admin Yap</button>
+        <div id="subadmin-key-result" style="margin-top:14px;font-family:'Orbitron',monospace;font-size:13px;color:var(--accent3);letter-spacing:2px"></div>
+      </div>
+      <div id="subadmins-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Game Modal -->
+<div class="modal-overlay" id="game-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeGame()">✕</button>
+    <h3 id="game-modal-title">Oyun</h3>
+    <div class="game-area" id="game-container"></div>
+    <div class="game-controls" id="game-controls"></div>
+    <div id="game-result" style="margin-top:12px;text-align:center;font-weight:700;font-size:16px"></div>
+  </div>
+</div>
+
+<!-- User Detail Modal (Admin) -->
+<div class="modal-overlay" id="user-detail-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeUserDetail()">✕</button>
+    <h3 id="detail-username">Kullanıcı</h3>
+    <div id="detail-content"></div>
+  </div>
+</div>
+
+<script>
+// ===== STARS =====
+(function() {
+  const c = document.getElementById('stars');
+  for (let i = 0; i < 150; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 2.5 + 0.5;
+    s.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;animation-duration:${Math.random()*4+2}s;animation-delay:${Math.random()*4}s`;
+    c.appendChild(s);
+  }
+})();
+
+// ===== CONNECTIVITY =====
+let connectivityOk = true;
+function checkConnectivity() {
+  const popup = document.getElementById('connectivity-popup');
+  if (!navigator.onLine) {
+    popup.className = 'no-internet';
+    popup.textContent = '🔴 İnternet bağlantısı yok';
+    popup.style.display = 'block';
+    connectivityOk = false;
+    return;
+  }
+  fetch('/api/health', { cache: 'no-cache' })
+    .then(r => r.json())
+    .then(() => {
+      popup.style.display = 'none';
+      connectivityOk = true;
+    })
+    .catch(() => {
+      popup.className = 'no-server';
+      popup.textContent = '🟡 Sunucuya bağlanılamıyor';
+      popup.style.display = 'block';
+      connectivityOk = false;
+    });
+}
+window.addEventListener('online', checkConnectivity);
+window.addEventListener('offline', checkConnectivity);
+setInterval(checkConnectivity, 10000);
+checkConnectivity();
+
+// ===== STATE =====
+let currentUser = null;
+let currentAdmin = null;
+let userPassword = '';
+let allAdminUsers = [];
+
+// ===== UTILS =====
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'show ' + type;
+  setTimeout(() => t.className = '', 2500);
+}
+
+async function api(path, opts={}) {
+  const res = await fetch(path, { headers:{'Content-Type':'application/json'}, ...opts });
+  return res.json();
+}
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ===== LOGIN =====
+function switchLoginMode(mode) {
+  document.querySelectorAll('.login-tab').forEach((t,i) => {
+    t.classList.toggle('active', (mode==='user' && i===0)||(mode==='admin' && i===1));
+  });
+  document.getElementById('user-auth-section').style.display = mode==='user' ? 'block' : 'none';
+  document.getElementById('admin-auth-section').style.display = mode==='admin' ? 'block' : 'none';
+}
+
+function showRegister() {
+  document.getElementById('user-login-form').style.display = 'none';
+  document.getElementById('user-register-form').style.display = 'block';
+}
+function showLogin() {
+  document.getElementById('user-login-form').style.display = 'block';
+  document.getElementById('user-register-form').style.display = 'none';
+}
+
+async function doLogin() {
+  const username = document.getElementById('login-username').value.trim();
+  const password = document.getElementById('login-password').value;
+  if (!username || !password) return;
+  const data = await api('/api/auth/login', { method:'POST', body: JSON.stringify({username, password}) });
+  if (data.success) {
+    userPassword = password;
+    currentUser = data.user;
+    enterApp();
+  } else {
+    document.getElementById('login-error').textContent = data.message;
+  }
+}
+
+// ===== USERNAME VALIDATION =====
+const ALLOWED_RE = /^[A-Za-z0-9_]+$/;
+
+function checkUsernameRules(v) {
+  return {
+    len:    v.length >= 9,
+    maxlen: v.length <= 30,
+    letters: (v.match(/[A-Za-z]/g) || []).length >= 5,
+    punct:  v.includes('_'),
+    digits: (v.match(/[0-9]/g) || []).length >= 3,
+    chars:  ALLOWED_RE.test(v) && v.length > 0,
+  };
+}
+
+function liveValidateUsername(v) {
+  const rules = checkUsernameRules(v);
+  const map = { len:'rule-len', maxlen:'rule-maxlen', letters:'rule-letters', punct:'rule-punct', digits:'rule-digits', chars:'rule-chars' };
+  const labels = {
+    len:    `${v.length >= 9 ? '✅' : '⬜'} En az 9 karakter`,
+    maxlen: `${v.length <= 30 && v.length > 0 ? '✅' : v.length > 30 ? '❌' : '⬜'} En fazla 30 karakter`,
+    letters:`${rules.letters ? '✅' : '⬜'} En az 5 harf (a-z / A-Z)`,
+    punct:  `${rules.punct ? '✅' : '⬜'} En az 1 alt çizgi ( _ )`,
+    digits: `${rules.digits ? '✅' : '⬜'} En az 3 rakam (0-9)`,
+    chars:  `${rules.chars ? '✅' : v.length > 0 ? '❌' : '⬜'} Sadece harf, rakam ve _ karakteri`,
+  };
+  Object.keys(map).forEach(key => {
+    const el = document.getElementById(map[key]);
+    el.textContent = labels[key];
+    if (v.length === 0) { el.className = 'rule-item'; return; }
+    el.className = 'rule-item ' + (rules[key] ? 'ok' : 'fail');
+  });
+  const allOk = Object.values(rules).every(Boolean);
+  const btn = document.getElementById('reg-btn');
+  btn.style.opacity = allOk ? '1' : '0.5';
+  btn.style.cursor = allOk ? 'pointer' : 'not-allowed';
+  return allOk;
+}
+
+async function doRegister() {
+  const username = document.getElementById('reg-username').value.trim();
+  const password = document.getElementById('reg-password').value;
+  const errEl = document.getElementById('reg-error');
+  errEl.textContent = '';
+
+  if (!username || !password) { errEl.textContent = 'Tüm alanları doldur.'; return; }
+
+  const rules = checkUsernameRules(username);
+  if (!rules.chars)    { errEl.textContent = 'Kullanıcı adı sadece harf, rakam ve _ içerebilir.'; return; }
+  if (!rules.len)      { errEl.textContent = 'Kullanıcı adı en az 9 karakter olmalı.'; return; }
+  if (!rules.maxlen)   { errEl.textContent = 'Kullanıcı adı en fazla 30 karakter olabilir.'; return; }
+  if (!rules.letters)  { errEl.textContent = 'Kullanıcı adında en az 5 harf bulunmalı.'; return; }
+  if (!rules.punct)    { errEl.textContent = 'Kullanıcı adında en az 1 alt çizgi ( _ ) bulunmalı.'; return; }
+  if (!rules.digits)   { errEl.textContent = 'Kullanıcı adında en az 3 rakam bulunmalı.'; return; }
+
+  const data = await api('/api/auth/register', { method:'POST', body: JSON.stringify({username, password}) });
+  if (data.success) {
+    userPassword = password;
+    currentUser = data.user;
+    enterApp();
+  } else {
+    errEl.textContent = data.message;
+  }
+}
+
+async function doAdminLogin() {
+  const key = document.getElementById('admin-key-input').value.trim().toUpperCase();
+  const data = await api('/api/auth/admin-login', { method:'POST', body: JSON.stringify({productKey: key}) });
+  if (data.success) {
+    currentAdmin = data;
+    enterAdmin();
+  } else {
+    document.getElementById('admin-error').textContent = data.message;
+  }
+}
+
+async function doLogout() {
+  await api('/api/auth/logout', { method:'POST' });
+  currentUser = null;
+  currentAdmin = null;
+  userPassword = '';
+  showPage('login-page');
+}
+
+// ===== APP =====
+function enterApp() {
+  showPage('app-page');
+  updateTopbar();
+  loadFriends();
+  loadMarket();
+  renderGames();
+  renderProfile();
+}
+
+function updateTopbar() {
+  if (!currentUser) return;
+  document.getElementById('topbar-tokens').textContent = currentUser.tokens || 0;
+  document.getElementById('topbar-code').textContent = currentUser.code;
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('section-' + name).classList.add('active');
+  event.currentTarget.classList.add('active');
+
+  if (name === 'trade') loadTrades();
+  if (name === 'gift') loadGiftFriends();
+  if (name === 'profile') renderProfile();
+}
+
+// ===== FRIENDS =====
+async function loadFriends() {
+  const data = await api('/api/friends');
+  if (!data.success) return;
+  const list = document.getElementById('friends-list');
+  const tradeFriend = document.getElementById('trade-friend');
+
+  if (!data.friends.length) {
+    list.innerHTML = '<div style="color:var(--text2);text-align:center;padding:40px">Henüz arkadaşın yok. @kod ile ekle!</div>';
+  } else {
+    list.innerHTML = data.friends.map(f => `
+      <div class="friend-card">
+        <div class="friend-avatar">${f.username[0].toUpperCase()}</div>
+        <div class="friend-info">
+          <div class="friend-name">${f.username}</div>
+          <div class="friend-code">${f.code}</div>
+        </div>
+        <div style="color:var(--gold);font-size:13px;font-weight:700">🪙 ${f.tokens}</div>
+      </div>
+    `).join('');
+  }
+
+  tradeFriend.innerHTML = data.friends.map(f => `<option value="${f.id}">${f.username} (${f.code})</option>`).join('');
+}
+
+async function addFriend() {
+  let code = document.getElementById('friend-code-input').value.trim().toUpperCase();
+  if (!code.startsWith('@')) code = '@' + code;
+  const data = await api('/api/friends/add', { method:'POST', body: JSON.stringify({code}) });
+  if (data.success) {
+    showToast('Arkadaş eklendi! 🎉');
+    document.getElementById('friend-code-input').value = '';
+    loadFriends();
+  } else {
+    showToast(data.message, 'error');
+  }
+}
+
+// ===== GAMES =====
+const GAMES = [
+  { id:'memory', name:'Hafıza Oyunu', icon:'🃏', desc:'Kartları eşleştir' },
+  { id:'snake', name:'Yılan', icon:'🐍', desc:'Klasik yılan oyunu' },
+  { id:'quiz', name:'Bilgi Yarışması', icon:'🧠', desc:'Soruları cevapla' },
+  { id:'reaction', name:'Refleks Testi', icon:'⚡', desc:'Ne kadar hızlısın?' },
+  { id:'wordle', name:'Kelime Bul', icon:'📝', desc:'5 harfli kelimeyi bul' },
+  { id:'math', name:'Hızlı Matematik', icon:'🔢', desc:'Hesapla ve kazan' },
+  { id:'colorMatch', name:'Renk Eşleştir', icon:'🎨', desc:'Renkleri sürükle' },
+  { id:'typing', name:'Yazma Yarışı', icon:'⌨️', desc:'En hızlı yazar' },
+  { id:'simon', name:'Simon Says', icon:'🔵', desc:'Renk dizisini takip et' },
+  { id:'minesweeper', name:'Mayın Tarlası', icon:'💣', desc:'Mayınları bul' },
+  { id:'dice', name:'Zar Oyunu', icon:'🎲', desc:'Yüksek zar at' },
+  { id:'flappy', name:'Flappy Ball', icon:'⚽', desc:'Engellerden geç' },
+  { id:'hangman', name:'Adam Asmaca', icon:'👤', desc:'Kelimeyi tahmin et' },
+  { id:'rps', name:'Taş Kağıt Makas', icon:'✂️', desc:'Rakibini yen' },
+  { id:'numguess', name:'Sayı Tahmin', icon:'🔮', desc:'Sayıyı bul' },
+];
+
+function renderGames() {
+  document.getElementById('games-grid').innerHTML = GAMES.map(g => `
+    <div class="game-card" onclick="openGame('${g.id}','${g.name}','${g.icon}')">
+      <span class="game-icon">${g.icon}</span>
+      <div class="game-name">${g.name}</div>
+      <div class="game-reward">+5 🪙 kazanmada</div>
+    </div>
+  `).join('');
+}
+
+let currentGame = null;
+function openGame(id, name, icon) {
+  document.getElementById('game-modal-title').textContent = icon + ' ' + name;
+  document.getElementById('game-result').textContent = '';
+  document.getElementById('game-modal').classList.add('open');
+  currentGame = id;
+  renderGameContent(id);
+}
+function closeGame() {
+  document.getElementById('game-modal').classList.remove('open');
+  clearInterval(window._gameTimer);
+  currentGame = null;
+}
+
+async function recordWin() {
+  const data = await api('/api/game/win', { method:'POST' });
+  if (data.success) {
+    currentUser.tokens = data.tokens;
+    currentUser.wins = data.wins;
+    currentUser.badges = data.badges;
+    updateTopbar();
+    document.getElementById('game-result').innerHTML = `<span style="color:var(--accent3)">🏆 Kazandın! +5 🪙 token</span>`;
+    showToast('+5 token kazandın! 🎉');
+  }
+}
+
+function renderGameContent(id) {
+  const container = document.getElementById('game-container');
+  const controls = document.getElementById('game-controls');
+  const result = document.getElementById('game-result');
+  container.innerHTML = '';
+  controls.innerHTML = '';
+  result.textContent = '';
+  clearInterval(window._gameTimer);
+
+  if (id === 'memory') startMemoryGame(container, controls);
+  else if (id === 'quiz') startQuizGame(container, controls);
+  else if (id === 'reaction') startReactionGame(container, controls);
+  else if (id === 'math') startMathGame(container, controls);
+  else if (id === 'dice') startDiceGame(container, controls);
+  else if (id === 'rps') startRPSGame(container, controls);
+  else if (id === 'numguess') startNumGuessGame(container, controls);
+  else if (id === 'typing') startTypingGame(container, controls);
+  else if (id === 'simon') startSimonGame(container, controls);
+  else if (id === 'hangman') startHangmanGame(container, controls);
+  else if (id === 'wordle') startWordleGame(container, controls);
+  else if (id === 'snake') startSnakeGame(container, controls);
+  else if (id === 'minesweeper') startMinesweeperGame(container, controls);
+  else if (id === 'colorMatch') startColorMatchGame(container, controls);
+  else if (id === 'flappy') startFlappyGame(container, controls);
+}
+
+// GAME: Memory
+function startMemoryGame(c, ctrl) {
+  const emojis = ['🍎','🍌','🍇','🍓','🍊','🍑','🫐','🍒'];
+  let cards = [...emojis,...emojis].sort(()=>Math.random()-0.5);
+  let flipped=[], matched=[], lock=false;
+  c.innerHTML = `<div class="game-inner" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:16px" id="mem-board"></div>`;
+  const board = document.getElementById('mem-board');
+  cards.forEach((e,i) => {
+    const card = document.createElement('div');
+    card.style.cssText = 'background:var(--surface2);border:1px solid var(--border);border-radius:8px;height:60px;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer;transition:all 0.3s;user-select:none';
+    card.dataset.idx = i; card.dataset.emoji = e;
+    card.textContent = '?';
+    card.onclick = () => {
+      if (lock||matched.includes(i)||flipped.includes(i)) return;
+      card.textContent = e; flipped.push(i);
+      if (flipped.length===2) {
+        lock=true;
+        const [a,b]=flipped;
+        if(cards[a]===cards[b]){
+          matched.push(a,b); flipped=[]; lock=false;
+          board.children[a].style.borderColor='var(--accent3)';
+          board.children[b].style.borderColor='var(--accent3)';
+          if(matched.length===cards.length) setTimeout(recordWin,300);
+        } else {
+          setTimeout(()=>{
+            board.children[a].textContent='?'; board.children[b].textContent='?';
+            flipped=[]; lock=false;
+          },800);
+        }
+      }
+    };
+    board.appendChild(card);
+  });
+}
+
+// GAME: Quiz
+function startQuizGame(c, ctrl) {
+  const qs = [
+    {q:'Türkiye\'nin başkenti?',a:'Ankara',opts:['İstanbul','Ankara','İzmir','Bursa']},
+    {q:'2+2×3=?',a:'8',opts:['12','10','8','6']},
+    {q:'En büyük gezegen?',a:'Jüpiter',opts:['Satürn','Jüpiter','Neptün','Uranüs']},
+    {q:'Python hangi tür dil?',a:'Yorumlanan',opts:['Derlenen','Yorumlanan','Assembly','Makine']},
+    {q:'HTML açılımı?',a:'HyperText Markup Language',opts:['HyperText Markup Language','High Text Machine Language','Home Tool Markup Language','Hyperlink Text Mode Language']},
+  ];
+  let idx=0, score=0;
+  function showQ() {
+    const q=qs[idx];
+    c.innerHTML=`<div class="game-inner">
+      <div style="font-size:13px;color:var(--text2);margin-bottom:8px">Soru ${idx+1}/${qs.length}</div>
+      <div style="font-weight:700;font-size:16px;margin-bottom:16px">${q.q}</div>
+      ${q.opts.map(o=>`<button onclick="window._quizAnswer('${o}')" style="display:block;width:100%;padding:10px;margin-bottom:8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;text-align:left;font-family:'Exo 2',sans-serif;transition:all 0.2s" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">${o}</button>`).join('')}
+    </div>`;
+    window._quizAnswer = (ans) => {
+      if(ans===q.a) score++;
+      idx++;
+      if(idx<qs.length) showQ();
+      else {
+        c.innerHTML=`<div class="game-inner" style="text-align:center"><div style="font-size:40px;margin-bottom:16px">🧠</div><div style="font-size:20px;font-weight:700">${score}/${qs.length} doğru</div></div>`;
+        if(score>=4) recordWin();
+        else document.getElementById('game-result').innerHTML=`<span style="color:var(--accent2)">En az 4 doğru gerekiyor (${score}/5)</span>`;
+      }
+    };
+  }
+  showQ();
+}
+
+// GAME: Reaction
+function startReactionGame(c, ctrl) {
+  let state='waiting', startTime, attempts=0, times=[];
+  c.innerHTML=`<div class="game-inner" style="text-align:center">
+    <div id="react-box" style="width:200px;height:200px;margin:0 auto;border-radius:16px;background:var(--surface2);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;transition:all 0.3s;user-select:none">Hazır ol...</div>
+    <div id="react-info" style="margin-top:16px;color:var(--text2);font-size:13px">Yeşil olunca tıkla! (3 tur)</div>
+  </div>`;
+  const box=document.getElementById('react-box');
+  const info=document.getElementById('react-info');
+  function nextRound() {
+    if(attempts>=3){
+      const avg=Math.round(times.reduce((a,b)=>a+b,0)/times.length);
+      c.innerHTML=`<div class="game-inner" style="text-align:center"><div style="font-size:36px;margin-bottom:12px">⚡</div><div style="font-size:20px;font-weight:700">Ortalama: ${avg}ms</div></div>`;
+      if(avg<500) recordWin();
+      else document.getElementById('game-result').innerHTML=`<span style="color:var(--accent2)">500ms altına gir! (${avg}ms)</span>`;
+      return;
+    }
+    state='waiting'; box.style.background='var(--surface2)'; box.style.borderColor='var(--border)'; box.textContent='Bekle...';
+    const delay=1000+Math.random()*2000;
+    window._reactTimeout=setTimeout(()=>{ state='go'; box.style.background='#43e97b'; box.style.borderColor='#43e97b'; box.textContent='TIKLA!'; startTime=Date.now(); },delay);
+  }
+  box.onclick=()=>{
+    if(state==='waiting'){ clearTimeout(window._reactTimeout); box.style.background='#ff4444'; box.textContent='Erken tıkladın!'; state='early'; setTimeout(nextRound,800); }
+    else if(state==='go'){ const t=Date.now()-startTime; times.push(t); attempts++; box.textContent=t+'ms'; state='done'; info.textContent=`Tur ${attempts}/3`; setTimeout(nextRound,800); }
+  };
+  nextRound();
+}
+
+// GAME: Math
+function startMathGame(c, ctrl) {
+  let score=0, total=10, cur=0;
+  function nextQ(){
+    if(cur>=total){ c.innerHTML=`<div class="game-inner" style="text-align:center"><div style="font-size:36px">🔢</div><div style="font-size:22px;font-weight:700;margin-top:12px">${score}/${total}</div></div>`; if(score>=8) recordWin(); else document.getElementById('game-result').innerHTML=`<span style="color:var(--accent2)">8/10 gerekiyor (${score})</span>`; return; }
+    const a=Math.floor(Math.random()*20)+1, b=Math.floor(Math.random()*20)+1;
+    const ops=['+','-','×']; const op=ops[Math.floor(Math.random()*ops.length)];
+    let ans; if(op==='+') ans=a+b; else if(op==='-') ans=a-b; else ans=a*b;
+    c.innerHTML=`<div class="game-inner" style="text-align:center">
+      <div style="font-size:13px;color:var(--text2);margin-bottom:8px">${cur+1}/${total}</div>
+      <div style="font-size:32px;font-weight:900;margin-bottom:20px">${a} ${op} ${b} = ?</div>
+      <input id="math-ans" type="number" style="width:120px;padding:12px;background:var(--surface2);border:2px solid var(--border);border-radius:10px;color:var(--text);font-size:20px;text-align:center;font-family:'Orbitron',monospace;outline:none" autofocus>
+      <button onclick="window._mathCheck()" style="display:block;margin:12px auto 0;padding:10px 24px;background:linear-gradient(135deg,var(--accent),#8b83ff);border:none;border-radius:10px;color:white;font-weight:700;cursor:pointer;font-family:'Exo 2',sans-serif">Cevapla</button>
+    </div>`;
+    document.getElementById('math-ans').onkeydown=e=>{ if(e.key==='Enter') window._mathCheck(); };
+    window._mathCheck=()=>{ const v=parseInt(document.getElementById('math-ans').value); if(v===ans) score++; cur++; nextQ(); };
+  }
+  nextQ();
+}
+
+// GAME: Dice
+function startDiceGame(c, ctrl) {
+  let wins=0, rounds=5;
+  function roll(){
+    const myDice=Math.ceil(Math.random()*6), cpuDice=Math.ceil(Math.random()*6);
+    const faces=['','⚀','⚁','⚂','⚃','⚄','⚅'];
+    if(myDice>cpuDice) wins++;
+    rounds--;
+    const msg=myDice>cpuDice?'<span style="color:var(--accent3)">Kazandın!</span>':myDice<cpuDice?'<span style="color:var(--accent2)">Kaybettin!</span>':'<span style="color:var(--gold)">Berabere!</span>';
+    c.innerHTML=`<div class="game-inner" style="text-align:center">
+      <div style="display:flex;justify-content:center;gap:40px;font-size:60px;margin-bottom:16px"><span>${faces[myDice]}</span><span>${faces[cpuDice]}</span></div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:8px">Sen vs Bilgisayar</div>
+      <div style="font-size:18px;font-weight:700">${msg}</div>
+      <div style="margin-top:12px;color:var(--text2)">Galibiyet: ${wins} | Kalan: ${rounds}</div>
+    </div>`;
+    if(rounds>0) ctrl.innerHTML=`<button class="btn btn-primary btn-sm" onclick="window._diceRoll()">🎲 At</button>`;
+    else{ ctrl.innerHTML=''; if(wins>=3) recordWin(); else document.getElementById('game-result').innerHTML=`<span style="color:var(--accent2)">3 galibiyet lazım (${wins}/5)</span>`; }
+  }
+  window._diceRoll=roll;
+  c.innerHTML=`<div class="game-inner" style="text-align:center"><div style="font-size:60px;margin-bottom:16px">🎲</div><div style="color:var(--text2)">5 turda 3 kez kazan!</div></div>`;
+  ctrl.innerHTML=`<button class="btn btn-primary btn-sm" onclick="window._diceRoll()">🎲 At</button>`;
+}
+
+// GAME: RPS
+function startRPSGame(c, ctrl) {
+  let score=0, round=0, total=5;
+  const choices=['taş','kağıt','makas'];
+  const emoji={'taş':'🪨','kağıt':'📄','makas':'✂️'};
+  function play(mine){
+    const cpu=choices[Math.floor(Math.random()*3)];
+    let res;
+    if(mine===cpu) res='draw';
+    else if((mine==='taş'&&cpu==='makas')||(mine==='kağıt'&&cpu==='taş')||(mine==='makas'&&cpu==='kağıt')) { res='win'; score++; }
+    else res='lose';
+    round++;
+    const msg=res==='win'?'✅ Kazandın!':res==='lose'?'❌ Kaybettin!':'🤝 Berabere';
+    c.innerHTML=`<div class="game-inner" style="text-align:center">
+      <div style="display:flex;justify-content:center;gap:40px;font-size:60px;margin:16px 0">${emoji[mine]}<span style="font-size:24px;align-self:center">vs</span>${emoji[cpu]}</div>
+      <div style="font-size:18px;font-weight:700;margin-bottom:8px">${msg}</div>
+      <div style="color:var(--text2);font-size:13px">Skor: ${score} | Tur: ${round}/${total}</div>
+    </div>`;
+    if(round<total){
+      ctrl.innerHTML=`<button class="btn btn-sm btn-outline" onclick="window._rps('taş')">🪨 Taş</button><button class="btn btn-sm btn-outline" onclick="window._rps('kağıt')">📄 Kağıt</button><button class="btn btn-sm btn-outline" onclick="window._rps('makas')">✂️ Makas</button>`;
+    } else {
+      ctrl.innerHTML='';
+      if(score>=3) recordWin(); else document.getElementById('game-result').innerHTML=`<span style="color:var(--accent2)">3 galibiyet lazım (${score})</span>`;
+    }
+  }
+  window._rps=play;
+  c.innerHTML=`<div class="game-inner" style="text-align:center"><div style="font-size:48px;margin-bottom:16px">🪨📄✂️</div><div style="color:var(--text2)">5 turda 3 kez kazan!</div></div>`;
+  ctrl.innerHTML=`<button class="btn btn-sm btn-outline" onclick="window._rps('taş')">🪨 Taş</button><button class="btn btn-sm btn-outline" onclick="window._rps('kağıt')">📄 Kağıt</button><button class="btn btn-sm btn-outline" onclick="window._rps('makas')">✂️ Makas</button>`;
+}
+
+// GAME: Number Guess
+function startNumGuessGame(c, ctrl) {
+  const secret=Math.floor(Math.random()*100)+1;
+  let attempts=0, maxAttempts=7;
+  function render(hint='') {
+    c.innerHTML=`<div class="game-inner" style="text-align:center">
+      <div style="font-size:36px;margin-bottom:12px">🔮</div>
+      <div style="color:var(--text2);margin-bottom:16px">1-100 arası bir sayı. ${maxAttempts-attempts} hakkın kaldı.</div>
+      ${hint?`<div style="font-size:16px;font-weight:700;margin-bottom:12px">${hint}</div>`:''}
+      <input id="guess-input" type="number" min="1" max="100" style="width:120px;padding:12px;background:var(--surface2);border:2px solid var(--border);border-radius:10px;color:var(--text);font-size:20px;text-align:center;font-family:'Orbitron',monospace;outline:none" autofocus>
+      <button onclick="window._guess()" style="display:block;margin:12px auto 0;padding:10px 24px;background:linear-gradient(135deg,var(--accent),#8b83ff);border:none;border-radius:10px;color:white;font-weight:700;cursor:pointer;font-family:'Exo 2',sans-serif">Tahmin Et</button>
+    </div>`;
+    document.getElementById('guess-input').onkeydown=e=>{ if(e.key==='Enter') window._guess(); };
+  }
+  window._guess=()=>{
+    const v=parseInt(document.getElementById('guess-input').value);
+    attempts++;
+    if(v===secret){ c.innerHTML=`<div class="game-inner" style="text-align:center"><div style="font-size:40px">🎉</div><div style="font-size:20px;font-weight:700;margin-top:12px">${secret} doğru! ${attempts} denemede buldun.</div></div>`; recordWin(); }
+    else if(attempts>=maxAttempts){ c.innerHTML=`<div class="game-inner" style="text-align:center"><div style="font-size:40px">💔</div><div style="font-size:18px;margin-top:12px">Sayı ${secret} idi.</div></div>`; document.getElementById('game-result').innerHTML=`<span style="color:var(--accent2)">Kaybettin!</span>`; }
+    else render(v<secret?`⬆️ ${v} çok küçük!`:`⬇️ ${v} çok büyük!`);
+  };
+  render();
+}
+
+// GAME: Typing
+function startTypingGame(c, ctrl) {
+  const words=['javascript','programming','keyboard','platform','victory','champion','thunder','galaxy','crystal','dragon','rainbow','phantom','wizard','knight','castle'];
+  const text=words.sort(()=>Math.random()-0.5).slice(0,8).join(' ');
+  let started=false, startTime;
+  c.innerHTML=`<div class="game-inner">
+    <div style="font-size:13px;color:var(--text2);margin-bottom:12px">Aşağıdaki metni yaz:</div>
+    <div id="type-text" style="font-family:'Orbitron',monospace;font-size:13px;line-height:2;color:var(--text2);margin-bottom:16px;letter-spacing:1px">${text}</div>
+    <textarea id="type-input" style="width:100%;height:80px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Orbitron',monospace;font-size:13px;padding:10px;resize:none;outline:none;letter-spacing:1px" placeholder="Buraya yaz..."></textarea>
+    <div id="type-wpm" style="margin-top:8px;color:var(--text2);font-size:13px"></div>
+  </div>`;
+  document.getElementById('type-input').oninput=function(){
+    if(!started){ started=true; startTime=Date.now(); }
+    const val=this.value;
+    if(val===text){
+      const elapsed=(Date.now()-startTime)/1000/60;
+      const wpm=Math.round((text.split(' ').length)/elapsed);
+      c.innerHTML=`<div class="game-inner" style="text-align:center"><div style="font-size:40px">⌨️</div><div style="font-size:22px;font-weight:700;margin-top:12px">${wpm} WPM</div></div>`;
+      if(wpm>=30) recordWin(); else document.getElementById('game-result').innerHTML=`<span style="color:var(--accent2)">30 WPM lazım (${wpm})</span>`;
+    }
+  };
+}
+
+// GAME: Simon Says
+function startSimonGame(c, ctrl) {
+  const colors=['#ff4444','#4488ff','#44ff88','#ffdd44'];
+  const names=['Kırmızı','Mavi','Yeşil','Sarı'];
+  let sequence=[], playerSeq=[], round=0;
+  function render(){
+    c.innerHTML=`<div class="game-inner">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:200px;margin:0 auto">
+        ${colors.map((col,i)=>`<div id="simon-${i}" onclick="window._simonClick(${i})" style="height:80px;border-radius:12px;background:${col};opacity:0.4;cursor:pointer;transition:all 0.2s;border:2px solid transparent"></div>`).join('')}
+      </div>
+      <div id="simon-info" style="text-align:center;margin-top:16px;color:var(--text2);font-size:13px">Tur ${round+1} — Sırayı izle!</div>
+    </div>`;
+  }
+  function flash(i, cb){
+    const el=document.getElementById('simon-'+i);
+    if(!el){ cb&&cb(); return; }
+    el.style.opacity='1'; el.style.border='2px solid white';
+    setTimeout(()=>{ el.style.opacity='0.4'; el.style.border='2px solid transparent'; setTimeout(cb||function(){},200); },400);
+  }
+  function playSequence(){
+    let i=0;
+    function next(){ if(i>=sequence.length){ enableInput(); return; } flash(sequence[i],()=>{ i++; setTimeout(next,200); }); }
+    setTimeout(next, 500);
+  }
+  function enableInput(){
+    document.getElementById('simon-info').textContent='Şimdi sıranı gir!';
+    window._simonClick=(idx)=>{
+      flash(idx);
+      playerSeq.push(idx);
+      if(playerSeq[playerSeq.length-1]!==sequence[playerSeq.length-1]){
+        document.getElementById('simon-info').textContent='❌ Yanlış!';
+        window._simonClick=null;
+        if(round>=4) recordWin();
+        else document.getElementById('game-result').innerHTML=`<span style="color:var(--accent2)">Kaybettin! ${round} tur</span>`;
+        return;
+      }
+      if(playerSeq.length===sequence.length){
+        round++; playerSeq=[];
+        if(round>=5){ recordWin(); return; }
+        sequence.push(Math.floor(Math.random()*4));
+        render(); playSequence();
+      }
+    };
+  }
+  render();
+  sequence=[Math.floor(Math.random()*4)];
+  playSequence();
+}
+
+// GAME: Hangman
+function startHangmanGame(c, ctrl) {
+  const words=['JAVASCRIPT','PYTHON','NODEJS','GITHUB','DOCKER','LINUX','FIREFOX','CHROME','ANDROID','IPHONE','GALAXY','LAPTOP','MONITOR','KEYBOARD','MOUSE'];
+  const word=words[Math.floor(Math.random()*words.length)];
+  let guessed=[], wrong=0, maxWrong=6;
+  function render(){
+    const display=word.split('').map(l=>guessed.includes(l)?l:'_').join(' ');
+    const done=word.split('').every(l=>guessed.includes(l));
+    const failed=wrong>=maxWrong;
+    c.innerHTML=`<div class="game-inner" style="text-align:center">
+      <div style="font-size:40px;margin-bottom:8px">😵</div>
+      <div style="font-family:'Orbitron',monospace;font-size:22px;letter-spacing:8px;margin-bottom:16px">${display}</div>
+      <div style="color:var(--accent2);margin-bottom:12px">Yanlış: ${wrong}/${maxWrong}</div>
+      ${!done&&!failed?`<div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center">${'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map(l=>`<button onclick="window._hangman('${l}')" ${guessed.includes(l)?'disabled':''} style="width:32px;height:32px;border-radius:6px;border:1px solid ${guessed.includes(l)?'var(--border)':'var(--accent)'};background:${guessed.includes(l)?'var(--surface2)':'transparent'};color:${guessed.includes(l)?'var(--text2)':'var(--text)'};cursor:${guessed.includes(l)?'default':'pointer'};font-weight:700;font-family:'Exo 2',sans-serif;transition:all 0.2s">${l}</button>`).join('')}</div>`:''}
+    </div>`;
+    window._hangman=(l)=>{ guessed.push(l); if(!word.includes(l)) wrong++; render(); if(word.split('').every(l=>guessed.includes(l))) recordWin(); else if(wrong>=maxWrong) document.getElementById('game-result').innerHTML=`<span style="color:var(--accent2)">Kelime: ${word}</span>`; };
+  }
+  render();
+}
+
+// GAME: Wordle
+function startWordleGame(c, ctrl) {
+  const words=['ELMA','ARABA','KALEM','MASA','KITAP','OKUL','DENIZ','DAĞLAR','NEHIR','KUŞAK'];
+  const fiveLetters=['ELMAS','ARABA','KITAP','DENIZ','NEHIR','KUŞAK','YILDIZ','ŞELALE'];
+  const wordList=['ARABA','KITAP','DENIZ','KALEM','ŞEKER','BAHÇE','PAZAR','DUMAN','ÇIÇEK','KUZEY'];
+  const word=(wordList[Math.floor(Math.random()*wordList.length)]).padEnd(5).trim().slice(0,5);
+  let guesses=[], current='', maxGuesses=6;
+  function render(){
+    c.innerHTML=`<div class="game-inner">
+      <div style="font-family:'Orbitron',monospace;font-size:11px;color:var(--text2);text-align:center;margin-bottom:16px">5 harfli Türkçe kelime bul — ${maxGuesses} hak</div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px;align-items:center">
+        ${Array.from({length:maxGuesses},(_,i)=>{
+          const g=guesses[i]||'';
+          return `<div style="display:flex;gap:4px">${Array.from({length:5},(_,j)=>{
+            const letter=g[j]||''; let bg='var(--surface2)', border='var(--border)';
+            if(g){ if(word[j]===letter){ bg='#43e97b'; border='#43e97b'; } else if(word.includes(letter)){ bg='#ffa500'; border='#ffa500'; } else if(letter){ bg='#555'; border='#555'; } }
+            const isActive=i===guesses.length;
+            const disp=isActive&&current[j]?current[j]:letter;
+            return `<div style="width:40px;height:40px;border:2px solid ${border};background:${bg};border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:900;font-family:'Orbitron',monospace;font-size:14px">${disp}</div>`;
+          }).join('')}</div>`;
+        }).join('')}
+      </div>
+      <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;max-width:320px;margin:0 auto">
+        ${'QWERTYUIOPASDFGHJKLZXCVBNM'.split('').map(l=>`<button onclick="window._wordle('${l}')" style="width:28px;height:36px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;font-weight:700;font-family:'Exo 2',sans-serif;font-size:12px">${l}</button>`).join('')}
+        <button onclick="window._wordleDel()" style="padding:0 10px;height:36px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;font-weight:700;font-family:'Exo 2',sans-serif;font-size:11px">⌫</button>
+        <button onclick="window._wordleEnter()" style="padding:0 10px;height:36px;border-radius:6px;border:1px solid var(--accent);background:var(--accent);color:white;cursor:pointer;font-weight:700;font-family:'Exo 2',sans-serif;font-size:11px">↵</button>
+      </div>
+    </div>`;
+    window._wordle=(l)=>{ if(current.length<5) { current+=l; render(); } };
+    window._wordleDel=()=>{ current=current.slice(0,-1); render(); };
+    window._wordleEnter=()=>{
+      if(current.length<5){ showToast('5 harf gir!','error'); return; }
+      guesses.push(current);
+      const won=current===word;
+      current='';
+      render();
+      if(won) recordWin();
+      else if(guesses.length>=maxGuesses) document.getElementById('game-result').innerHTML=`<span style="color:var(--accent2)">Kelime: ${word}</span>`;
+    };
+  }
+  render();
+}
+
+// GAME: Snake (canvas)
+function startSnakeGame(c, ctrl) {
+  c.innerHTML=`<canvas id="snake-canvas" width="300" height="300" style="display:block;margin:0 auto;background:var(--bg);border-radius:12px"></canvas>`;
+  const canvas=document.getElementById('snake-canvas');
+  const ctx=canvas.getContext('2d');
+  const CELL=20, COLS=15, ROWS=15;
+  let snake=[{x:7,y:7}], dir={x:1,y:0}, food={x:3,y:3}, score=0, running=true;
+  function newFood(){ do{ food={x:Math.floor(Math.random()*COLS),y:Math.floor(Math.random()*ROWS)}; }while(snake.some(s=>s.x===food.x&&s.y===food.y)); }
+  function draw(){
+    ctx.fillStyle='#060610'; ctx.fillRect(0,0,300,300);
+    ctx.fillStyle='#ff4444'; ctx.beginPath(); ctx.arc(food.x*CELL+CELL/2,food.y*CELL+CELL/2,8,0,Math.PI*2); ctx.fill();
+    snake.forEach((s,i)=>{ ctx.fillStyle=i===0?'#6c63ff':'#8b83ff'; ctx.fillRect(s.x*CELL+1,s.y*CELL+1,CELL-2,CELL-2); });
+    ctx.fillStyle='white'; ctx.font='12px Orbitron'; ctx.fillText('Score: '+score,8,16);
+  }
+  function step(){
+    if(!running) return;
+    const head={x:snake[0].x+dir.x,y:snake[0].y+dir.y};
+    if(head.x<0||head.x>=COLS||head.y<0||head.y>=ROWS||snake.some(s=>s.x===head.x&&s.y===head.y)){ running=false; clearInterval(window._snakeTimer); document.getElementById('game-result').innerHTML=score>=5?'':`<span style="color:var(--accent2)">5 yiyecek lazım (${score})</span>`; if(score>=5) recordWin(); return; }
+    snake.unshift(head);
+    if(head.x===food.x&&head.y===food.y){ score++; newFood(); if(score>=5){ running=false; clearInterval(window._snakeTimer); recordWin(); return; } }
+    else snake.pop();
+    draw();
+  }
+  window._snakeTimer=setInterval(step,150);
+  document.onkeydown=(e)=>{ if(e.key==='ArrowUp'&&dir.y!==1) dir={x:0,y:-1}; else if(e.key==='ArrowDown'&&dir.y!==-1) dir={x:0,y:1}; else if(e.key==='ArrowLeft'&&dir.x!==1) dir={x:-1,y:0}; else if(e.key==='ArrowRight'&&dir.x!==-1) dir={x:1,y:0}; };
+  draw();
+  ctrl.innerHTML=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;max-width:140px"><div></div><button onclick="if(window._snakeDir&&window._snakeDir.y!==1){window._dir={x:0,y:-1}}" style="padding:8px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;cursor:pointer;color:var(--text)">⬆</button><div></div><button onclick="" style="padding:8px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;cursor:pointer;color:var(--text)" onmousedown="dir={x:-1,y:0}">⬅</button><div></div><button style="padding:8px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;cursor:pointer;color:var(--text)" onmousedown="dir={x:1,y:0}">➡</button><div></div><button style="padding:8px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;cursor:pointer;color:var(--text)" onmousedown="dir={x:0,y:1}">⬇</button></div>`;
+}
+
+// GAME: Minesweeper
+function startMinesweeperGame(c, ctrl) {
+  const ROWS=8,COLS=8,MINES=10;
+  let board=[], revealed=[], flagged=[], gameOver=false;
+  for(let i=0;i<ROWS*COLS;i++){ board[i]=false; revealed[i]=false; flagged[i]=false; }
+  let mines=[]; while(mines.length<MINES){ let p=Math.floor(Math.random()*ROWS*COLS); if(!mines.includes(p)) mines.push(p); }
+  mines.forEach(p=>board[p]=true);
+  function count(i){ let n=0; const r=Math.floor(i/COLS),cl=i%COLS; [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]].forEach(([dr,dc])=>{ const nr=r+dr,nc=cl+dc; if(nr>=0&&nr<ROWS&&nc>=0&&nc<COLS&&board[nr*COLS+nc]) n++; }); return n; }
+  function reveal(i){ if(revealed[i]||flagged[i]||gameOver) return; revealed[i]=true; if(!board[i]&&count(i)===0){ const r=Math.floor(i/COLS),cl=i%COLS; [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]].forEach(([dr,dc])=>{ const nr=r+dr,nc=cl+dc; if(nr>=0&&nr<ROWS&&nc>=0&&nc<COLS) reveal(nr*COLS+nc); }); } render(); if(board[i]){ gameOver=true; document.getElementById('game-result').innerHTML='<span style="color:var(--accent2)">💥 Patlattın!</span>'; } else if(board.filter((_,idx)=>!board[idx]||!revealed[idx]).length===MINES){ recordWin(); } }
+  function render(){
+    c.innerHTML=`<div class="game-inner"><div style="display:grid;grid-template-columns:repeat(8,1fr);gap:2px">${board.map((_,i)=>{
+      let bg='var(--surface2)',txt='';
+      if(revealed[i]){ bg=board[i]?'#ff4444':'var(--surface)'; txt=board[i]?'💣':(count(i)||''); }
+      if(flagged[i]&&!revealed[i]){ txt='🚩'; }
+      const c2=['','#4488ff','#44ff88','#ff4444','#8844ff','#ff8844','#44ffff','#ff44ff','#ffff44'][count(i)]||'var(--text)';
+      return `<div onclick="window._mineClick(${i})" oncontextmenu="window._mineFlag(${i});return false" style="height:32px;border-radius:4px;background:${bg};border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;font-weight:700;color:${c2}">${txt}</div>`;
+    }).join('')}</div><div style="margin-top:8px;font-size:11px;color:var(--text2);text-align:center">Sağ tık = bayrak | Tüm güvenlileri aç</div></div>`;
+    window._mineClick=reveal;
+    window._mineFlag=(i)=>{ if(!revealed[i]) { flagged[i]=!flagged[i]; render(); } };
+  }
+  render();
+}
+
+// GAME: Color Match
+function startColorMatchGame(c, ctrl) {
+  const colors=['🔴','🟠','🟡','🟢','🔵','🟣'];
+  let score=0, total=10, cur=0;
+  function nextQ(){
+    if(cur>=total){ c.innerHTML=`<div class="game-inner" style="text-align:center"><div style="font-size:40px">🎨</div><div style="font-size:22px;font-weight:700;margin-top:12px">${score}/${total}</div></div>`; if(score>=8) recordWin(); else document.getElementById('game-result').innerHTML=`<span style="color:var(--accent2)">8/10 gerekiyor (${score})</span>`; return; }
+    const correct=Math.floor(Math.random()*colors.length);
+    const opts=[correct];
+    while(opts.length<4){ const r=Math.floor(Math.random()*colors.length); if(!opts.includes(r)) opts.push(r); }
+    opts.sort(()=>Math.random()-0.5);
+    c.innerHTML=`<div class="game-inner" style="text-align:center">
+      <div style="font-size:13px;color:var(--text2);margin-bottom:8px">${cur+1}/${total}</div>
+      <div style="font-size:80px;margin-bottom:16px">${colors[correct]}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">${opts.map(o=>`<button onclick="window._colorMatch(${o===correct})" style="padding:14px;font-size:28px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:all 0.2s" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">${colors[o]}</button>`).join('')}</div>
+    </div>`;
+    window._colorMatch=(correct)=>{ if(correct) score++; cur++; nextQ(); };
+  }
+  nextQ();
+}
+
+// GAME: Flappy
+function startFlappyGame(c, ctrl) {
+  c.innerHTML=`<canvas id="flappy-canvas" width="300" height="300" style="display:block;margin:0 auto;background:var(--bg);border-radius:12px;cursor:pointer"></canvas>`;
+  const canvas=document.getElementById('flappy-canvas');
+  const ctx=canvas.getContext('2d');
+  let bird={y:150,vy:0}, pipes=[], frame=0, score=0, alive=true;
+  function jump(){ if(alive) bird.vy=-6; }
+  canvas.onclick=jump;
+  ctrl.innerHTML=`<button class="btn btn-primary btn-sm" onclick="">Tıkla veya canvas'a bas = Zıpla</button>`;
+  document.onkeydown=(e)=>{ if(e.code==='Space') jump(); };
+  function loop(){
+    if(!alive) return;
+    ctx.fillStyle='#060610'; ctx.fillRect(0,0,300,300);
+    bird.vy+=0.4; bird.y+=bird.vy;
+    if(frame%80===0){ const gap=80, top=50+Math.random()*100; pipes.push({x:300,top,gap}); }
+    pipes=pipes.filter(p=>p.x>-30);
+    pipes.forEach(p=>{ p.x-=2.5; ctx.fillStyle='#43e97b'; ctx.fillRect(p.x,0,30,p.top); ctx.fillRect(p.x,p.top+p.gap,30,300); if(p.x===140) score++; if(bird.y<p.top||bird.y>p.top+p.gap){ if(p.x<160&&p.x>110){ alive=false; if(score>=5) recordWin(); else document.getElementById('game-result').innerHTML=`<span style="color:var(--accent2)">5 boru geç! (${score})</span>`; return; } } });
+    ctx.fillStyle='#6c63ff'; ctx.beginPath(); ctx.arc(140,bird.y,12,0,Math.PI*2); ctx.fill();
+    if(bird.y<0||bird.y>300){ alive=false; if(score>=5) recordWin(); else document.getElementById('game-result').innerHTML=`<span style="color:var(--accent2)">5 boru geç! (${score})</span>`; return; }
+    ctx.fillStyle='white'; ctx.font='14px Orbitron'; ctx.fillText('Score: '+score,8,20);
+    frame++;
+    if(alive) requestAnimationFrame(loop);
+  }
+  loop();
+}
+
+// ===== TRADE =====
+async function loadTrades() {
+  const data = await api('/api/trade/my');
+  const badgeData_raw = await api('/api/auth/me');
+  const myBadges = currentUser?.badges || [];
+  
+  // Populate offered badge select
+  const badgeDefs = {
+    badge_10:'🥉 İlk Adım', badge_20:'⭐ Yükselen', badge_50:'🥈 Tecrübeli',
+    badge_100:'🥇 Usta', badge_200:'🏆 Efsane', badge_500:'👑 Tanrı', badge_1000:'💎 Ölümsüz',
+    badge_rare:'🌟 Nadir', badge_vip:'💫 VIP', badge_beta:'🔬 Beta'
+  };
+  
+  const offered = document.getElementById('trade-offered');
+  const uniqueBadges = [...new Set(myBadges.map(b=>b.id))];
+  offered.innerHTML = uniqueBadges.length 
+    ? uniqueBadges.map(id=>`<option value="${id}">${badgeDefs[id]||id}</option>`).join('')
+    : '<option disabled>Rozet yok</option>';
+
+  if (!data.success) return;
+  const list = document.getElementById('trades-list');
+  const incoming = data.trades.filter(t => t.targetId === currentUser?.id && t.status === 'pending');
+  if (!incoming.length) {
+    list.innerHTML = '<div style="color:var(--text2);text-align:center;padding:20px">Bekleyen teklif yok</div>';
+    return;
+  }
+  list.innerHTML = incoming.map(t => `
+    <div class="trade-card">
+      <div style="display:flex;justify-content:space-between;align-items:start">
+        <div>
+          <div class="trade-status ${t.status}">${t.status==='pending'?'Bekliyor':t.status==='accepted'?'Kabul':'Reddedildi'}</div>
+          <div style="margin-top:8px;font-size:14px">Teklif: <strong>${t.offeredBadge}</strong> → İstiyor: <strong>${t.wantedBadge}</strong></div>
+        </div>
+        ${t.status==='pending'?`<div style="display:flex;gap:6px">
+          <button class="btn btn-success btn-sm" onclick="respondTrade('${t.id}',true)">✅</button>
+          <button class="btn btn-danger btn-sm" onclick="respondTrade('${t.id}',false)">❌</button>
+        </div>`:''}
+      </div>
+    </div>
+  `).join('');
+}
+
+async function createTrade() {
+  const targetId = document.getElementById('trade-friend').value;
+  const offeredBadge = document.getElementById('trade-offered').value;
+  const wantedBadge = document.getElementById('trade-wanted').value.trim();
+  if (!targetId || !offeredBadge || !wantedBadge) return showToast('Tüm alanları doldur', 'error');
+  const data = await api('/api/trade/create', { method:'POST', body: JSON.stringify({targetId, offeredBadge, wantedBadge}) });
+  if (data.success) showToast('Teklif gönderildi! 🤝');
+  else showToast(data.message, 'error');
+}
+
+async function respondTrade(tradeId, accept) {
+  const data = await api('/api/trade/respond', { method:'POST', body: JSON.stringify({tradeId, accept}) });
+  if (data.success) { showToast(accept ? 'Takas tamamlandı!' : 'Reddedildi'); loadTrades(); }
+}
+
+// ===== MARKET =====
+async function loadMarket() {
+  const data = await api('/api/market/items');
+  if (!data.success) return;
+  const owned = currentUser?.purchases || [];
+  document.getElementById('market-grid').innerHTML = data.items.map(item => `
+    <div class="market-item">
+      <div class="market-item-icon">${item.icon}</div>
+      <div class="market-item-name">${item.name}</div>
+      <div class="market-item-type">${item.type === 'name_effect' ? 'İsim Efekti' : item.type === 'profile_effect' ? 'Profil Efekti' : 'Set'}</div>
+      <div class="market-item-price">🪙 ${item.cost}</div>
+      ${owned.includes(item.id) 
+        ? `<span class="owned-badge">✓ Sahip</span><br><button class="btn btn-sm btn-outline" style="margin-top:8px" onclick="equipItem('${item.id}')">Giy</button>`
+        : `<button class="btn btn-primary btn-sm" onclick="buyItem('${item.id}')">Satın Al</button>`}
+    </div>
+  `).join('');
+}
+
+async function buyItem(itemId) {
+  const data = await api('/api/market/buy', { method:'POST', body: JSON.stringify({itemId}) });
+  if (data.success) {
+    currentUser.tokens = data.newBalance;
+    if (!currentUser.purchases) currentUser.purchases = [];
+    currentUser.purchases.push(itemId);
+    updateTopbar();
+    showToast(`${data.item.name} satın alındı! 🛍️`);
+    loadMarket();
+  } else showToast(data.message, 'error');
+}
+
+async function equipItem(itemId) {
+  const data = await api('/api/market/equip', { method:'POST', body: JSON.stringify({itemId}) });
+  if (data.success) { showToast('Giyildi! ✨'); }
+  else showToast(data.message, 'error');
+}
+
+// ===== PROFILE =====
+const BADGE_DEFS = {
+  badge_10:{name:'İlk Adım',icon:'🥉'}, badge_20:{name:'Yükselen Yıldız',icon:'⭐'},
+  badge_50:{name:'Tecrübeli',icon:'🥈'}, badge_100:{name:'Usta',icon:'🥇'},
+  badge_200:{name:'Efsane',icon:'🏆'}, badge_500:{name:'Tanrı Oyuncu',icon:'👑'},
+  badge_1000:{name:'Ölümsüz',icon:'💎'}, badge_rare:{name:'Nadir',icon:'🌟'},
+  badge_vip:{name:'VIP',icon:'💫'}, badge_beta:{name:'Beta Test',icon:'🔬'},
+  badge_social:{name:'Sosyal',icon:'🦋'}, badge_trader:{name:'Tüccar',icon:'🤝'},
+  badge_rich:{name:'Zengin',icon:'💰'}, badge_speed:{name:'Hız Şeytanı',icon:'⚡'},
+  badge_loyal:{name:'Sadık',icon:'❤️'}
+};
+
+function renderProfile() {
+  if (!currentUser) return;
+  document.getElementById('profile-avatar').textContent = currentUser.username[0].toUpperCase();
+  const unameEl = document.getElementById('profile-username');
+  unameEl.textContent = currentUser.username;
+  if (currentUser.nameEffect) unameEl.className = 'profile-username ' + currentUser.nameEffect;
+  document.getElementById('profile-code').textContent = currentUser.code;
+  document.getElementById('profile-wins').textContent = currentUser.wins || 0;
+  document.getElementById('profile-tokens').textContent = currentUser.tokens || 0;
+  const badges = currentUser.badges || [];
+  document.getElementById('profile-badge-count').textContent = badges.length;
+  
+  const profileHeader = document.getElementById('profile-header-card');
+  if (currentUser.profileEffect) profileHeader.className = 'profile-header ' + currentUser.profileEffect;
+
+  // Group badges
+  const groups = {};
+  badges.forEach(b => { if (!groups[b.id]) groups[b.id] = 0; groups[b.id]++; });
+  document.getElementById('profile-badges').innerHTML = Object.keys(groups).length
+    ? Object.entries(groups).map(([id, count]) => {
+        const def = BADGE_DEFS[id] || {name: id, icon: '🏅'};
+        return `<div class="badge-item"><span class="badge-icon">${def.icon}</span>${def.name}${count>1?`<span class="badge-count">×${count}</span>`:''}` +
+          `</div>`;
+      }).join('')
+    : '<div style="color:var(--text2);font-size:13px">Henüz rozet yok. Oyna ve kazan!</div>';
+}
+
+function revealPassword() {
+  document.getElementById('password-display').textContent = userPassword || '(bilinmiyor)';
+}
+function hidePassword() {
+  document.getElementById('password-display').textContent = '••••••••';
+}
+
+// ===== GIFT =====
+function loadGiftFriends() {
+  api('/api/friends').then(data => {
+    const sel = document.getElementById('gift-friend');
+    if (data.success && data.friends.length) {
+      sel.innerHTML = data.friends.map(f => `<option value="${f.id}">${f.username} (${f.code})</option>`).join('');
+    } else {
+      sel.innerHTML = '<option disabled>Arkadaş yok</option>';
+    }
+  });
+}
+
+async function sendGift() {
+  const targetId = document.getElementById('gift-friend').value;
+  const amount = parseInt(document.getElementById('gift-amount').value);
+  if (!targetId || !amount) return showToast('Bilgileri doldur', 'error');
+  const data = await api('/api/gift', { method:'POST', body: JSON.stringify({targetId, amount}) });
+  if (data.success) {
+    currentUser.tokens = data.newBalance;
+    updateTopbar();
+    showToast(`${amount} token gönderildi! 🎁`);
+    document.getElementById('gift-amount').value = '';
+  } else showToast(data.message, 'error');
+}
+
+// ===== ADMIN =====
+function enterAdmin() {
+  showPage('admin-page');
+  const type = currentAdmin.adminType;
+  document.getElementById('admin-type-label').textContent = type === 'bas_admin' ? '👑 Baş Admin' : '🛡️ Alt Admin';
+
+  const tabsEl = document.getElementById('admin-tabs');
+  let tabs = `<button class="admin-tab active" onclick="switchAdminTab('users', this)">Kullanıcılar</button>`;
+  if (type === 'bas_admin') tabs += `<button class="admin-tab" onclick="switchAdminTab('subadmins', this)">Alt Adminler</button>`;
+  tabsEl.innerHTML = tabs;
+
+  loadAdminUsers();
+}
+
+function switchAdminTab(name, btn) {
+  document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('admin-section-' + name).classList.add('active');
+  btn.classList.add('active');
+  if (name === 'subadmins') loadSubAdmins();
+}
+
+async function loadAdminUsers() {
+  const data = await api('/api/admin/users');
+  if (!data.success) return;
+  allAdminUsers = data.users;
+  renderAdminUsers(data.users);
+}
+
+function filterAdminUsers() {
+  const q = document.getElementById('admin-search').value.toLowerCase();
+  renderAdminUsers(allAdminUsers.filter(u => u.username.toLowerCase().includes(q) || u.code.toLowerCase().includes(q)));
+}
+
+function renderAdminUsers(users) {
+  const isBasAdmin = currentAdmin?.adminType === 'bas_admin';
+  document.getElementById('admin-users-tbody').innerHTML = users.map(u => `
+    <tr>
+      <td><strong>${u.username}</strong><br><span style="font-size:11px;color:var(--text2)">${u.id.slice(0,8)}...</span></td>
+      <td style="font-family:'Orbitron',monospace;font-size:12px">${u.code}</td>
+      <td>${u.wins}</td>
+      <td style="color:var(--gold)">🪙 ${u.tokens}</td>
+      <td>${u.badgeCount}</td>
+      <td><span style="color:${u.banned?'var(--accent2)':'var(--accent3)'};">${u.banned?'🔴 Banlı':'🟢 Aktif'}</span></td>
+      <td>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="btn btn-sm btn-outline" onclick="openUserDetail('${u.id}','${u.username}')">Detay</button>
+          <button class="btn btn-sm ${u.banned?'btn-success':'btn-danger'}" onclick="banUser('${u.id}')">${u.banned?'Banı Kaldır':'Banla'}</button>
+          ${isBasAdmin ? `<button class="btn btn-sm btn-danger" onclick="deleteUser('${u.id}')">Sil</button>` : ''}
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+async function banUser(id) {
+  const data = await api(`/api/admin/user/${id}/ban`, { method:'POST' });
+  if (data.success) { showToast(data.banned ? 'Kullanıcı banlandı' : 'Ban kaldırıldı'); loadAdminUsers(); }
+}
+
+async function deleteUser(id) {
+  if (!confirm('Kullanıcıyı silmek istediğinizden emin misiniz?')) return;
+  const data = await api(`/api/admin/user/${id}`, { method:'DELETE' });
+  if (data.success) { showToast('Kullanıcı silindi'); loadAdminUsers(); }
+}
+
+async function openUserDetail(id, username) {
+  document.getElementById('detail-username').textContent = username;
+  document.getElementById('user-detail-modal').classList.add('open');
+  const isBasAdmin = currentAdmin?.adminType === 'bas_admin';
+  const badgeDefs = Object.entries(BADGE_DEFS).map(([id,d]) => 
+    `<option value="${id}">${d.icon} ${d.name}</option>`).join('');
+  
+  document.getElementById('detail-content').innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:14px">
+      ${isBasAdmin ? `
+      <div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Kimlik Bilgileri</div>
+        <button class="btn btn-sm btn-outline" onclick="viewCredentials('${id}')">Şifre / İsim Görüntüle</button>
+        <div id="cred-result" style="margin-top:8px;font-family:'Orbitron',monospace;font-size:12px;color:var(--text2)"></div>
+      </div>` : ''}
+      <div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Token Yönetimi</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <input type="number" id="token-amount" placeholder="Miktar" style="width:100px;padding:8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Exo 2',sans-serif;outline:none">
+          <button class="btn btn-sm btn-success" onclick="editToken('${id}','add')">+ Ekle</button>
+          <button class="btn btn-sm btn-danger" onclick="editToken('${id}','subtract')">- Çıkar</button>
+          ${isBasAdmin ? `<button class="btn btn-sm btn-outline" onclick="editToken('${id}','set')">= Ayarla</button>` : ''}
+        </div>
+        <div id="token-result" style="margin-top:6px;font-size:13px;color:var(--accent3)"></div>
+      </div>
+      <div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Rozet Yönetimi</div>
+        <select id="badge-select" style="width:100%;padding:8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Exo 2',sans-serif;outline:none;margin-bottom:8px">${badgeDefs}</select>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-sm btn-success" onclick="editBadge('${id}','give')">🏅 Ver</button>
+          <button class="btn btn-sm btn-danger" onclick="editBadge('${id}','take')">✂️ Al</button>
+        </div>
+        <div id="badge-result" style="margin-top:6px;font-size:13px;color:var(--accent3)"></div>
+      </div>
+    </div>
+  `;
+}
+
+async function viewCredentials(id) {
+  const data = await api(`/api/admin/user/${id}/credentials`);
+  if (data.success) {
+    document.getElementById('cred-result').textContent = `Kullanıcı: ${data.username}`;
+  }
+}
+
+async function editToken(id, action) {
+  const amount = parseInt(document.getElementById('token-amount').value);
+  if (!amount) return;
+  const data = await api(`/api/admin/user/${id}/token`, { method:'POST', body: JSON.stringify({amount, action}) });
+  if (data.success) { document.getElementById('token-result').textContent = `Yeni bakiye: 🪙 ${data.tokens}`; loadAdminUsers(); }
+}
+
+async function editBadge(id, action) {
+  const badgeId = document.getElementById('badge-select').value;
+  const data = await api(`/api/admin/user/${id}/badge`, { method:'POST', body: JSON.stringify({badgeId, action}) });
+  if (data.success) { document.getElementById('badge-result').textContent = action==='give' ? '✅ Rozet verildi' : '❌ Rozet alındı'; }
+}
+
+function closeUserDetail() { document.getElementById('user-detail-modal').classList.remove('open'); }
+
+async function loadSubAdmins() {
+  const data = await api('/api/admin/subadmins');
+  if (!data.success) return;
+  document.getElementById('subadmins-list').innerHTML = data.subAdmins.length
+    ? data.subAdmins.map(a => `
+      <div class="card" style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-weight:700">${a.username}</div>
+          <div style="font-family:'Orbitron',monospace;font-size:11px;color:var(--accent3);margin-top:4px">${a.productKey}</div>
+        </div>
+        <button class="btn btn-sm btn-danger" onclick="removeSubAdmin('${a.id}')">Kaldır</button>
+      </div>`).join('')
+    : '<div style="color:var(--text2)">Alt admin yok</div>';
+}
+
+async function createSubAdmin() {
+  const linkedUserId = document.getElementById('subadmin-userid').value.trim();
+  if (!linkedUserId) return;
+  const data = await api('/api/admin/create-subadmin', { method:'POST', body: JSON.stringify({linkedUserId}) });
+  if (data.success) {
+    document.getElementById('subadmin-key-result').textContent = '🔑 Anahtar: ' + data.productKey;
+    showToast('Alt admin oluşturuldu!');
+    loadSubAdmins();
+  } else showToast(data.message, 'error');
+}
+
+async function removeSubAdmin(id) {
+  await api(`/api/admin/subadmin/${id}`, { method:'DELETE' });
+  showToast('Alt admin kaldırıldı');
+  loadSubAdmins();
+}
+
+// ===== INIT =====
+window.addEventListener('load', async () => {
+  const data = await api('/api/auth/me');
+  if (data.loggedIn) {
+    if (data.type === 'user') { currentUser = data.user; enterApp(); }
+    else if (data.type === 'bas_admin' || data.type === 'sub_admin') { currentAdmin = { adminType: data.type }; enterAdmin(); }
+  }
+});
+
+// Product key auto-format
+document.getElementById('admin-key-input').addEventListener('input', function() {
+  let v = this.value.replace(/[^A-Z0-9]/gi, '').toUpperCase();
+  let formatted = v.match(/.{1,5}/g)?.join('-') || v;
+  if (formatted.length > 29) formatted = formatted.slice(0, 29);
+  this.value = formatted;
+});
+</script>
+</body>
+</html>

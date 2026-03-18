@@ -1,0 +1,16 @@
+{
+  "items": [
+    {"id": "effect_fire", "name": "Ateş İsim Efekti", "type": "name_effect", "cost": 100, "css": "fire-text", "icon": "🔥"},
+    {"id": "effect_ice", "name": "Buz İsim Efekti", "type": "name_effect", "cost": 100, "css": "ice-text", "icon": "❄️"},
+    {"id": "effect_gold", "name": "Altın İsim Efekti", "type": "name_effect", "cost": 150, "css": "gold-text", "icon": "✨"},
+    {"id": "effect_rainbow", "name": "Gökkuşağı İsim Efekti", "type": "name_effect", "cost": 200, "css": "rainbow-text", "icon": "🌈"},
+    {"id": "effect_neon", "name": "Neon İsim Efekti", "type": "name_effect", "cost": 175, "css": "neon-text", "icon": "💡"},
+    {"id": "profile_galaxy", "name": "Galaksi Profil Efekti", "type": "profile_effect", "cost": 250, "css": "galaxy-profile", "icon": "🌌"},
+    {"id": "profile_aurora", "name": "Aurora Profil Efekti", "type": "profile_effect", "cost": 200, "css": "aurora-profile", "icon": "🌅"},
+    {"id": "profile_flame", "name": "Alev Profil Efekti", "type": "profile_effect", "cost": 300, "css": "flame-profile", "icon": "🔥"},
+    {"id": "set_dragon", "name": "Ejderha Seti", "type": "set", "cost": 500, "css": "dragon-set", "icon": "🐉", "includes": ["effect_fire", "profile_flame"]},
+    {"id": "set_ocean", "name": "Okyanus Seti", "type": "set", "cost": 400, "css": "ocean-set", "icon": "🌊", "includes": ["effect_ice", "profile_aurora"]},
+    {"id": "set_cosmic", "name": "Kozmik Set", "type": "set", "cost": 600, "css": "cosmic-set", "icon": "🌠", "includes": ["effect_rainbow", "profile_galaxy"]}
+  ],
+  "purchases": {}
+}

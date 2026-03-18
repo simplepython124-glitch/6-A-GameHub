@@ -1,0 +1,20 @@
+{
+  "definitions": [
+    {"id": "badge_10", "name": "İlk Adım", "description": "10 kazanma", "icon": "🥉", "requirement": 10},
+    {"id": "badge_20", "name": "Yükselen Yıldız", "description": "20 kazanma", "icon": "⭐", "requirement": 20},
+    {"id": "badge_50", "name": "Tecrübeli Oyuncu", "description": "50 kazanma", "icon": "🥈", "requirement": 50},
+    {"id": "badge_100", "name": "Usta", "description": "100 kazanma", "icon": "🥇", "requirement": 100},
+    {"id": "badge_200", "name": "Efsane", "description": "200 kazanma", "icon": "🏆", "requirement": 200},
+    {"id": "badge_500", "name": "Tanrı Oyuncu", "description": "500 kazanma", "icon": "👑", "requirement": 500},
+    {"id": "badge_1000", "name": "Ölümsüz", "description": "1000 kazanma", "icon": "💎", "requirement": 1000},
+    {"id": "badge_rare", "name": "Nadir", "description": "Özel Rozet", "icon": "🌟", "requirement": 0},
+    {"id": "badge_vip", "name": "VIP", "description": "VIP Rozet", "icon": "💫", "requirement": 0},
+    {"id": "badge_beta", "name": "Beta Test", "description": "Beta Tester", "icon": "🔬", "requirement": 0},
+    {"id": "badge_social", "name": "Sosyal Kelebek", "description": "10 arkadaş", "icon": "🦋", "requirement": 0},
+    {"id": "badge_trader", "name": "Tüccar", "description": "10 takas", "icon": "🤝", "requirement": 0},
+    {"id": "badge_rich", "name": "Zengin", "description": "1000 token biriktir", "icon": "💰", "requirement": 0},
+    {"id": "badge_speed", "name": "Hız Şeytanı", "description": "Özel hız rozeti", "icon": "⚡", "requirement": 0},
+    {"id": "badge_loyal", "name": "Sadık", "description": "Özel sadakat rozeti", "icon": "❤️", "requirement": 0}
+  ],
+  "userBadges": {}
+}
